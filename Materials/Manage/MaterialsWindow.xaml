@@ -51,7 +51,10 @@
                         <Border>
                             <WrapPanel>
                                 <Grid Height="35">
-                                    <Label Content="{Binding Supplier.Title}" Width="350"/>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="{Binding Supplier.Title}" Width="250"/>
+                                        <Button Content="Изменить"/>
+                                    </StackPanel>
                                 </Grid>
                             </WrapPanel>
                         </Border>
@@ -59,8 +62,7 @@
                 </ListView.ItemTemplate>
             </ListView>
             <ComboBox Height="25" ItemsSource="{Binding GetSupplierList}" SelectedIndex="0"/>
-            <Button Content="Добавить" Height="25"/>
-            <Button Content="Изменить" Height="25" IsEnabled="False"/>
+            <Button Content="Добавить" Height="25" Click="Button_AddMaterialSupplier_Click"/>
         </StackPanel>
 
         <Button Content="{Binding GetContentButton}"

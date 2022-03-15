@@ -13,8 +13,25 @@ namespace Materials.Manage
     /// </summary>
     public partial class MaterialsWindow : Window, INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public Material CurrentMaterial { get; set; }
-        public List<MaterialSupplier> CurrentMaterialSupplier { get; set; }
+
+        private List<MaterialSupplier> _ListMaterialSupplier;
+        public List<MaterialSupplier> ListMaterialSupplier
+        {
+            get
+            {
+                List<MaterialSupplier> listMaterialSupplier = _ListMaterialSupplier;
+                return listMaterialSupplier.ToList();
+            }
+            set
+            {
+                _ListMaterialSupplier = value;
+
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("ListMaterialSupplier"));            
+            }
+        }
 
         public string GetNameWindow
         {
@@ -41,20 +58,13 @@ namespace Materials.Manage
             InitializeComponent();
 
             CurrentMaterial = mat;
-            CurrentMaterialSupplier = ms;
+            ListMaterialSupplier = ms;
             this.DataContext = this;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public List<string> GetItemsType
         {
             get => GetItems.listFiltr.ToList();
-        }
-
-        public List<Supplier> GetItemsSupplier
-        {
-            get => Base.EM.Supplier.ToList();
         }
 
         private void Button_Save_Click(object sender, RoutedEventArgs e)
@@ -79,6 +89,11 @@ namespace Materials.Manage
             }
 
             DialogResult = true;
+        }
+
+        private void Button_AddMaterialSupplier_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         private void Bitton_EditImage_Click(object sender, RoutedEventArgs e)
