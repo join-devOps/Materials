@@ -1,0 +1,107 @@
+﻿<Window x:Class="Materials.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Materials"
+        mc:Ignorable="d"
+        Title="Материалы" Height="450" Width="700" FontFamily="Segoe Print"
+        MinHeight="450" MinWidth="700" Icon="Черновик.ico">
+    <Grid Margin="1">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="45"/>
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+            <StackPanel Width="200" >
+                <Label Content="Введите для поиска" HorizontalAlignment="Center"/>
+                <TextBox x:Name="TextBox_Name"
+                         KeyUp="TextBox_Name_KeyUp"
+                         Height="25"
+                         VerticalContentAlignment="Center"/>
+                <Button Content="Минимальное значение на" Height="25" Visibility="Collapsed"/>
+            </StackPanel>
+            <StackPanel Width="150">
+                <Label Content="Сортировка" HorizontalAlignment="Center"/>
+                <ComboBox Name="ComboBox_Sort"
+                          Height="25" Width="150"
+                          ItemsSource="{Binding listSortItems}"
+                          HorizontalAlignment="Center" VerticalContentAlignment="Center"/>
+                <Button Content="По возрастанию" Click="Button_Sort_Click" Uid="SortUp" Height="25" VerticalContentAlignment="Center"/>
+                <Button Content="По убыванию" Click="Button_Sort_Click" Uid="SortDown" Height="25" VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <StackPanel>
+                <Label Content="Фильтрация" HorizontalAlignment="Center"/>
+                <ComboBox Name="ComboBox_Filter"
+                          ItemsSource="{Binding listFiltrItems}"
+                          SelectionChanged="ComboBox_Filter_SelectionChanged"
+                          SelectedIndex="0"
+                          Height="25" Width="150"
+                          VerticalContentAlignment="Center"/>
+            </StackPanel>
+            <Label Name="Label_CountNow"
+                   Content="{Binding CountMaterials}"
+                   VerticalAlignment="Center"/>
+            <Label Content=" Из "
+                   VerticalAlignment="Center"/>
+            <Label Name="Label_Count"
+                   Content="{Binding MaxCountMaterials}"
+                   VerticalAlignment="Center"/>
+        </StackPanel>
+        <ListView x:Name="ListView_Materials" Height="auto" SelectionMode="Extended" ItemsSource="{Binding MaterialsList}" VerticalAlignment="Stretch" Grid.Row="1" Grid.RowSpan="1" Grid.ColumnSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderBrush="Black">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border Background="{Binding GetColor}">
+                        <WrapPanel>
+                            <Grid Height="175" Width="690">
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Изменить на" Click="ContextMenu_ChangeMinCount_Click"/>
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
+                                <StackPanel x:Name="StackPanel_Data" Orientation="Horizontal" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                    <Image Source="{Binding GetPhoto}"
+                                       Height="50" Width="75"/>
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="{Binding MaterialType.Title}" FontSize="12"/>
+                                            <Label Content=" | "/>
+                                            <Label Content="{Binding Title}" FontSize="12"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Минимальное кол-во: "/>
+                                            <Label Content="{Binding MinCount}" />
+                                            <Label Content=" шт"/>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Label Content="Поставщики:"/>
+                                            <Label Content="{Binding GetSupplier}"
+                                               FontSize="12"/>
+                                        </StackPanel>
+                                        <Button Content="Изменить" Width="150" Uid="{Binding ID}" Click="Button_ChangeMaterial_List" HorizontalAlignment="Left"/>
+                                        <Button Content="Удалить" Width="150" Uid="{Binding ID}" Click="Button_DeleteMaterial_List" HorizontalAlignment="Left"/>
+                                    </StackPanel>
+                                    <Label Content="Остаток: "/>
+                                    <Label Content="{Binding CountInStock}"/>
+                                </StackPanel>
+                            </Grid>
+                        </WrapPanel>
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Content="Добавить" Click="Button_AddItem_Click"
+                Height="25"
+                Grid.Row="2"
+                HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <StackPanel x:Name="StackPanel_Pages" Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Label Uid="Back" Content="&lt;&lt;" MouseDown="Label__MouseDown"/>
+
+            <Label Uid="Next" Content="&gt;&gt;" MouseDown="Label__MouseDown"/>
+        </StackPanel>
+    </Grid>
+</Window>
