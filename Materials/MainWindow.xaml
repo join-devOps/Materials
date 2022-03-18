@@ -98,10 +98,13 @@
                 Height="25"
                 Grid.Row="2"
                 HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <StackPanel x:Name="StackPanel_Pages" Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Label Uid="Back" Content="&lt;&lt;" MouseDown="Label__MouseDown"/>
-
-            <Label Uid="Next" Content="&gt;&gt;" MouseDown="Label__MouseDown"/>
+        <StackPanel x:Name="StackPanel_Pages" Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <StackPanel Grid.Row="2" HorizontalAlignment="Right" VerticalAlignment="Center" Width="200">
+            <ComboBox Name="ComboBox_Report" ItemsSource="{Binding ReportList}" SelectionChanged="ComboBox_Report_SelectionChanged" SelectedIndex="0" Height="25" Grid.Row="2"/>
+            <Button Content="Отчеты" Click="Button_AddReport_Click"
+                    Visibility="{Binding ReportVisible}"
+                    Height="25"
+                    Grid.Row="2"/>
         </StackPanel>
     </Grid>
 </Window>

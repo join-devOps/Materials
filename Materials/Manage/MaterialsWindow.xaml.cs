@@ -15,23 +15,8 @@ namespace Materials.Manage
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public Material CurrentMaterial { get; set; }
-
-        private List<MaterialSupplier> _ListMaterialSupplier;
-        public List<MaterialSupplier> ListMaterialSupplier
-        {
-            get
-            {
-                List<MaterialSupplier> listMaterialSupplier = _ListMaterialSupplier;
-                return listMaterialSupplier.ToList();
-            }
-            set
-            {
-                _ListMaterialSupplier = value;
-
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("ListMaterialSupplier"));            
-            }
-        }
+        public List<MaterialSupplier> CurrenrMaterialSupplier { get; set; }
+        public List<MaterialType> CurrentMaterilType { get; set; }
 
         public string GetNameWindow
         {
@@ -58,8 +43,10 @@ namespace Materials.Manage
             InitializeComponent();
 
             CurrentMaterial = mat;
-            ListMaterialSupplier = ms;
+            CurrenrMaterialSupplier = ms;
             this.DataContext = this;
+
+            CurrentMaterilType = Base.EM.MaterialType.ToList();
         }
 
         public List<string> GetItemsType

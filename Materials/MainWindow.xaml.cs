@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Word =  Microsoft.Office.Interop.Word;
 
 namespace Materials
 {
@@ -21,6 +22,7 @@ namespace Materials
         public List<string> MaterialsTypeList;
 
         public static List<string> listSort = new List<string> { "Наименование", "Остаток на складе", "Стоимость" };
+        public static List<string> listReport = new List<string> { "Не экспортировать", "Список материалов", "Список поставщики", "Топ 5 дорогих материалов", "Топ 5 дешевых материалов", "Материалы с поставщиками" };
 
         private byte _CodeSort;
         public byte CodeSort
@@ -73,6 +75,133 @@ namespace Materials
             }
         }
 
+        public List<string> ReportList
+        {
+            get => listReport.ToList();
+        }
+
+        private bool _IsChanged = false;
+        public bool IsChanged
+        {
+            get => _IsChanged;
+            set
+            {
+                _IsChanged = value;
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsChanged"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("ReportVisible"));
+                }
+            }
+        }
+
+        public Visibility ReportVisible
+        {
+            get => IsChanged ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void ComboBox_Report_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ComboBox_Report.SelectedIndex == 0)
+                IsChanged = false;
+            else IsChanged = true;
+        }
+
+        private void Button_AddReport_Click(object sender, RoutedEventArgs e)
+        {
+            if (ComboBox_Report.SelectedIndex == 1)
+                ListMaterials_Report();
+        }
+
+        private void ListMaterials_Report()
+        {
+            var application = new Word.Application();
+            Word.Document document = application.Documents.Add();
+            Word.Paragraph tableParagraph = document.Paragraphs.Add();
+            Word.Range tableRange = tableParagraph.Range;
+            Word.Table newTable = document.Tables.Add(tableRange, MaterialsList.Count + 1, 3);
+            newTable.Borders.InsideLineStyle = newTable.Borders.InsideLineStyle = Word.WdLineStyle.wdLineStyleSingle;
+            newTable.Range.Cells.VerticalAlignment = Word.WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+
+            Word.Range cellRange;
+
+            cellRange = newTable.Cell(1, 1).Range;
+            cellRange.Text = "Название материала";
+            cellRange = newTable.Cell(1, 2).Range;
+            cellRange.Text = "Стоимость материала";
+            cellRange = newTable.Cell(1, 3).Range;
+            cellRange.Text = "Минимальное количество";
+
+            newTable.Rows[1].Range.Bold = 1;
+            newTable.Rows[1].Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+
+            for (byte i = 0; i < MaterialsList.Count; i++)
+            {
+                var currentMaterial = MaterialsList[i];
+
+                cellRange = newTable.Cell(i + 2, 1).Range;
+                cellRange.Text = currentMaterial.Title;
+
+                cellRange = newTable.Cell(i + 2, 2).Range;
+                cellRange.Text = (currentMaterial.Cost).ToString();
+                cellRange.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+
+                cellRange = newTable.Cell(i + 2, 3).Range;
+                cellRange.Text = (currentMaterial.MinCount).ToString();
+                cellRange.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+            }
+
+            application.Visible = true;
+
+            document.SaveAs(Environment.CurrentDirectory);
+        }
+
+        private void ListSuppliers_Report()
+        {
+            List<Supplier> suppliers = Base.EM.Supplier.ToList();
+
+            var application = new Word.Application();
+            Word.Document document = application.Documents.Add();
+            Word.Paragraph tableParagraph = document.Paragraphs.Add();
+            Word.Range tableRange = tableParagraph.Range;
+            Word.Table newTable = document.Tables.Add(tableRange, suppliers.Count + 1, 3);
+            newTable.Borders.InsideLineStyle = newTable.Borders.InsideLineStyle = Word.WdLineStyle.wdLineStyleSingle;
+            newTable.Range.Cells.VerticalAlignment = Word.WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+
+            Word.Range cellRange;
+
+            cellRange = newTable.Cell(1, 1).Range;
+            cellRange.Text = "Название материала";
+            cellRange = newTable.Cell(1, 2).Range;
+            cellRange.Text = "Стоимость материала";
+            cellRange = newTable.Cell(1, 3).Range;
+            cellRange.Text = "Минимальное количество";
+
+            newTable.Rows[1].Range.Bold = 1;
+            newTable.Rows[1].Range.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+
+            for (byte i = 0; i < MaterialsList.Count; i++)
+            {
+                var currentMaterial = MaterialsList[i];
+
+                cellRange = newTable.Cell(i + 2, 1).Range;
+                cellRange.Text = currentMaterial.Title;
+
+                cellRange = newTable.Cell(i + 2, 2).Range;
+                cellRange.Text = (currentMaterial.Cost).ToString();
+                cellRange.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+
+                cellRange = newTable.Cell(i + 2, 3).Range;
+                cellRange.Text = (currentMaterial.MinCount).ToString();
+                cellRange.ParagraphFormat.Alignment = Word.WdParagraphAlignment.wdAlignParagraphCenter;
+            }
+
+            application.Visible = true;
+
+            document.SaveAs(Environment.CurrentDirectory);
+        }
+
         public List<string> listFiltrItems
         {
             get => GetItems.listFiltr.ToList();
@@ -118,16 +247,6 @@ namespace Materials
 
                 if (PropertyChanged != null)
                     PropertyChanged(this, new PropertyChangedEventArgs("Pages"));
-            }
-        }
-        
-        public byte MustPages
-        {
-            get
-            {
-                if (CountMaterials < 15)
-                    return CountMaterials;
-                else return 15;
             }
         }
 

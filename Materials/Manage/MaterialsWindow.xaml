@@ -26,7 +26,15 @@
                Grid.Row="1"/>
             <TextBox Text="{Binding CurrentMaterial.Title}" Height="25"/>
             <Label Content="Тип материала"/>
-            <ComboBox Name="ComboBox_TypeMaterial" SelectedItem="{Binding CurrentMaterial.MaterialType.Title}" ItemsSource="{Binding GetItemsType}"/>
+            <ComboBox Name="ComboBox_TypeMaterial" 
+                      ItemsSource="{Binding CurrentMaterilType}"
+                      SelectedItem="{Binding CurrentMaterial.MaterialType}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding Title}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
             <Label Content="Кол-во на складе"/>
             <TextBox Text="{Binding CurrentMaterial.CountInStock}" Height="25"/>
             <Label Content="Единица измерения"/>
@@ -45,7 +53,8 @@
 
         <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
             <Image Source="{Binding CurrentMaterial.GetPhoto}" Height="250"/>
-            <ListView Height="150" ItemsSource="{Binding CurrentMaterialSupplier}">
+            <Label Content="Поставщики" HorizontalAlignment="Center"/>
+            <ListView Height="150" ItemsSource="{Binding CurrenrMaterialSupplier}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border>
@@ -53,7 +62,7 @@
                                 <Grid Height="35">
                                     <StackPanel Orientation="Horizontal">
                                         <Label Content="{Binding Supplier.Title}" Width="250"/>
-                                        <Button Content="Изменить"/>
+                                        <Button Content="Удалить"/>
                                     </StackPanel>
                                 </Grid>
                             </WrapPanel>
