@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Materials.Manage"
         mc:Ignorable="d"
-        Title="{Binding GetNameWindow}" Height="650" Width="800" FontFamily="Segoe Print">
+        Title="{Binding GetNameWindow}" Height="750" Width="800" FontFamily="Segoe Print">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -53,8 +53,13 @@
 
         <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
             <Image Source="{Binding CurrentMaterial.GetPhoto}" Height="250"/>
+            <Label Content="Добавить поставщика" HorizontalAlignment="Center"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <ComboBox Height="25" Width="150" ItemsSource="{Binding GetSupplierList}" SelectedIndex="0"/>
+                <Button Content="Добавить" Click="Button_AddMaterialSupplier_Click" Width="150"/>
+            </StackPanel>
             <Label Content="Поставщики" HorizontalAlignment="Center"/>
-            <ListView Height="150" ItemsSource="{Binding CurrenrMaterialSupplier}">
+            <ListView Name="ListView_MaterialSupplier" Height="150" ItemsSource="{Binding CurrenrMaterialSupplier}" MouseDoubleClick="ListView_MouseDoubleClick">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Border>
@@ -70,8 +75,12 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <ComboBox Height="25" ItemsSource="{Binding GetSupplierList}" SelectedIndex="0"/>
-            <Button Content="Добавить" Height="25" Click="Button_AddMaterialSupplier_Click"/>
+            <StackPanel Visibility="{Binding GetChangerFunction}">
+                <Label Content="Изменение поставщика" HorizontalAlignment="Center"/>
+                <ComboBox Height="25" ItemsSource="{Binding GetSupplierList}" SelectedItem="{Binding CurrenrMaterialSupplier.Title}" SelectedIndex="0"/>
+                <Button Content="Изменить" Height="25" Click="Button_EditMaterialSupplier_Click"/>
+                <Button Content="Отмена/Закрыть" Click="Button_CloseEditMaterialSupplier_Click"/>
+            </StackPanel>
         </StackPanel>
 
         <Button Content="{Binding GetContentButton}"

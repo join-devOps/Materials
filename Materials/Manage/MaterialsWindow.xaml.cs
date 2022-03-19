@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Materials.Manage
 {
@@ -25,7 +26,7 @@ namespace Materials.Manage
 
         public string GetContentButton
         {
-            get => CurrentMaterial.ID == 0 ? "Добавить" : "Изменить";
+            get => CurrentMaterial.ID == 0 ? "Добавить" : "Сохранить";
         }
 
         public string GetContentImage
@@ -33,9 +34,46 @@ namespace Materials.Manage
             get => CurrentMaterial.ID == 0 ? "Добавить изображение" : "Изменить изображение";
         }
 
+        private bool _GetTrueChangedFunctions = false;
+        public bool GetTrueChangedFunctions
+        {
+            get => _GetTrueChangedFunctions;
+            set
+            {
+                _GetTrueChangedFunctions = value;
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("GetTrueChangedFunctions"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("GetChangerFunction"));
+                }
+            }
+        }
+
+        public Visibility GetChangerFunction
+        {
+            get => GetTrueChangedFunctions ? Visibility.Visible : Visibility.Collapsed;
+        }
+
         public List<string> GetSupplierList
         {
             get => Base.EM.Supplier.Select(item => item.Title).ToList();
+        }
+
+        private bool _GetAccess = true;
+        public bool GetAccess
+        {
+            get => _GetAccess;
+            set
+            {
+                _GetAccess = value;
+
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("GetContentButtonMaterialSuopplier"));
+                    PropertyChanged(this, new PropertyChangedEventArgs("GetAccess"));
+                }
+            }
         }
 
         public MaterialsWindow(Material mat, List<MaterialSupplier> ms)
@@ -83,6 +121,11 @@ namespace Materials.Manage
             
         }
 
+        private void Button_EditMaterialSupplier_Click(object sender, RoutedEventArgs e)
+        {
+            GetTrueChangedFunctions = false;
+        }
+
         private void Bitton_EditImage_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -97,6 +140,17 @@ namespace Materials.Manage
                     PropertyChanged(this, new PropertyChangedEventArgs("CurrentMaterial"));
                 }
             }
+        }
+
+        private void ListView_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            GetTrueChangedFunctions = true;
+            MaterialSupplier ms = ListView_MaterialSupplier.SelectedItem as MaterialSupplier;
+        }
+
+        private void Button_CloseEditMaterialSupplier_Click(object sender, RoutedEventArgs e)
+        {
+            GetTrueChangedFunctions = false;
         }
     }
 }
