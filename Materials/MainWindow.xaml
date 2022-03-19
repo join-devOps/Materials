@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Materials"
         mc:Ignorable="d"
-        Title="Материалы" Height="450" Width="700" FontFamily="Segoe Print"
-        MinHeight="450" MinWidth="700" Icon="Черновик.ico">
+        Title="Материалы" Height="450" Width="750" FontFamily="Segoe Print"
+        MinHeight="450" MinWidth="750" Icon="Черновик.ico">
     <Grid Margin="1">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -52,7 +52,7 @@
                    Content="{Binding MaxCountMaterials}"
                    VerticalAlignment="Center"/>
         </StackPanel>
-        <ListView x:Name="ListView_Materials" Height="auto" SelectionMode="Extended" ItemsSource="{Binding MaterialsList}" VerticalAlignment="Stretch" Grid.Row="1" Grid.RowSpan="1" Grid.ColumnSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderBrush="Black">
+        <ListView x:Name="ListView_Materials" Height="auto" SelectionMode="Extended" ItemsSource="{Binding MaterialsList}" VerticalAlignment="Stretch" Grid.Row="1" Grid.RowSpan="1" Grid.ColumnSpan="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderBrush="Black" MouseDoubleClick="ListView_Materials_MouseDoubleClick">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Border Background="{Binding GetColor}">
@@ -63,6 +63,7 @@
                                         <MenuItem Header="Изменить на" Click="ContextMenu_ChangeMinCount_Click"/>
                                     </ContextMenu>
                                 </Grid.ContextMenu>
+                                <Label Content="{Binding GetCountInStock}" HorizontalAlignment="Right"/>
                                 <StackPanel x:Name="StackPanel_Data" Orientation="Horizontal" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                                     <Image Source="{Binding GetPhoto}"
                                        Height="50" Width="75"/>
@@ -82,11 +83,8 @@
                                             <Label Content="{Binding GetSupplier}"
                                                FontSize="12"/>
                                         </StackPanel>
-                                        <Button Content="Изменить" Width="150" Uid="{Binding ID}" Click="Button_ChangeMaterial_List" HorizontalAlignment="Left"/>
                                         <Button Content="Удалить" Width="150" Uid="{Binding ID}" Click="Button_DeleteMaterial_List" HorizontalAlignment="Left"/>
                                     </StackPanel>
-                                    <Label Content="Остаток: "/>
-                                    <Label Content="{Binding CountInStock}"/>
                                 </StackPanel>
                             </Grid>
                         </WrapPanel>

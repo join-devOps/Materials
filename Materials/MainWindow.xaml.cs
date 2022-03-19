@@ -35,6 +35,62 @@ namespace Materials
             }
         }
 
+        public byte MaxCountMaterials
+        {
+            get => (byte)MaterialsList.Count;
+        }
+
+        private byte _CountMaterials;
+        public byte CountMaterials
+        {
+            get => _CountMaterials;
+            set
+            {
+                _CountMaterials = value;
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("CountMaterials"));
+            }
+        }
+
+        private byte _Pages;
+        public byte Pages
+        {
+            get => _Pages;
+            set
+            {
+                _Pages = value;
+
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("Pages"));
+            }
+        }
+
+        private string _SearchInfo;
+        public string SearchInfo
+        {
+            get => _SearchInfo;
+            set
+            {
+                _SearchInfo = value;
+
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("MaterialsList"));
+            }
+        }
+
+        private string _FilterItems;
+        public string FilterItems
+        {
+            get => _FilterItems;
+            set
+            {
+                _FilterItems = value;
+
+                if (PropertyChanged != null)
+                    PropertyChanged(this, new PropertyChangedEventArgs("MaterialsList"));
+            }
+        }
+
         private List<Material> _Materials;
         public List<Material> MaterialsList
         {
@@ -49,6 +105,15 @@ namespace Materials
                 if (FilterItems != null)
                     materialsSearched = materialsSearched.Where(item =>
                     item.MaterialType.Title.IndexOf(FilterItems, StringComparison.OrdinalIgnoreCase) != -1).ToList();
+
+                //Label lbl = new Label();
+
+                //byte count = (byte)(materialsSearched.Count / 15);
+                //for (byte i = 0; i < count; i++)
+                //{
+                //    lbl.Content = i + " ";
+                //}
+                //StackPanel_Pages.Children.Add(lbl);
 
                 CountMaterials = (byte)materialsSearched.Count;
 
@@ -99,6 +164,24 @@ namespace Materials
         public Visibility ReportVisible
         {
             get => IsChanged ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public List<string> listFiltrItems
+        {
+            get => GetItems.listFiltr.ToList();
+        }
+
+        public List<string> listSortItems
+        {
+            get => listSort.ToList();
+        }
+
+        public MainWindow()
+        {
+            InitializeComponent();
+
+            DataContext = this;
+            MaterialsList = Base.EM.Material.ToList();
         }
 
         private void ComboBox_Report_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -202,79 +285,7 @@ namespace Materials
             document.SaveAs(Environment.CurrentDirectory);
         }
 
-        public List<string> listFiltrItems
-        {
-            get => GetItems.listFiltr.ToList();
-        }
 
-        public List<string> listSortItems
-        {
-            get => listSort.ToList();
-        }
-
-        public MainWindow()
-        {
-            InitializeComponent();
-
-            DataContext = this;
-            MaterialsList = Base.EM.Material.ToList();
-        }
-
-        public byte MaxCountMaterials
-        {
-            get => (byte)MaterialsList.Count;
-        }
-
-        private byte _CountMaterials;
-        public byte CountMaterials
-        {
-            get => _CountMaterials;
-            set
-            {
-                _CountMaterials = value;
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("CountMaterials"));
-            }
-        }
-
-        private byte _Pages;
-        public byte Pages
-        {
-            get => _Pages;
-            set
-            {
-                _Pages = value;
-
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("Pages"));
-            }
-        }
-
-        private string _SearchInfo;
-        public string SearchInfo
-        {
-            get => _SearchInfo;
-            set
-            {
-                _SearchInfo = value;
-
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("MaterialsList"));
-            }
-        }
-
-        private string _FilterItems;
-        public string FilterItems
-        {
-            get => _FilterItems;
-            set
-            {
-                _FilterItems = value;
-
-                if (PropertyChanged != null)
-                    PropertyChanged(this, new PropertyChangedEventArgs("MaterialsList"));
-            }
-        }
 
         private void ComboBox_Filter_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -303,21 +314,6 @@ namespace Materials
             }
         }
 
-        private void Label__MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            Label l = (Label)sender;
-
-            switch (l.Uid)
-            {
-                case "Back":
-                    break;
-                case "Next":
-                    break;
-                default:
-                    break;
-            }
-        }
-
         private void ContextMenu_ChangeMinCount_Click(object sender, RoutedEventArgs e)
         {
             var list = ListView_Materials.SelectedItems;
@@ -336,19 +332,6 @@ namespace Materials
             else MessageBox.Show("Введите не менее 0", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
 
             ListView_Materials.Items.Refresh();
-        }
-
-        private void Button_ChangeMaterial_List(object sender, RoutedEventArgs e)
-        {
-            Button B = (Button)sender;
-            byte index = Convert.ToByte(B.Uid);
-            Material m = Base.EM.Material.FirstOrDefault(item => item.ID == index);
-            List<MaterialSupplier> ms = Base.EM.MaterialSupplier.Where(item => item.MaterialID == index).ToList();
-
-            MaterialsWindow editMaterials = new MaterialsWindow(m, ms);
-
-            if ((bool)editMaterials.ShowDialog())
-                PropertyChanged(this, new PropertyChangedEventArgs("MaterialsList"));
         }
 
         private void Button_DeleteMaterial_List(object sender, RoutedEventArgs e)
@@ -375,6 +358,17 @@ namespace Materials
                 PropertyChanged(this, new PropertyChangedEventArgs("MaterialsList"));
                 PropertyChanged(this, new PropertyChangedEventArgs("MaxCountMaterials"));
             }
+        }
+
+        private void ListView_Materials_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            Material mat = ListView_Materials.SelectedItem as Material;
+            List<MaterialSupplier> ms = Base.EM.MaterialSupplier.Where(item => item.MaterialID == mat.ID).ToList();
+
+            MaterialsWindow editMaterials = new MaterialsWindow(mat, ms);
+
+            if ((bool)editMaterials.ShowDialog())
+                PropertyChanged(this, new PropertyChangedEventArgs("MaterialsList"));
         }
     }
 }

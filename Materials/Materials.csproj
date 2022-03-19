@@ -70,7 +70,6 @@
     <Compile Include="Manage\MaterialsWindow.xaml.cs">
       <DependentUpon>MaterialsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PagesChange.cs" />
     <Compile Include="SQL\Agent.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>

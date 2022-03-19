@@ -22,6 +22,11 @@ namespace Materials.SQL
 
     public partial class Material
     {
+
+        public string GetCountInStock
+        {
+            get => "Остаток: " + CountInStock;
+        }
         public SolidColorBrush GetColor
         {
             get
